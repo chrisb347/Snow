@@ -35,7 +35,13 @@ Flex Dashboard package is nice because socket and server functions are not neces
 
 There are a few nice features of this application. The user can toggle between snowfall and snow depth, because some mountains have 1 or the other, only mountains with data in their time series are included. Second, is that the user can compare up to 4 weather stations across time on the line chart using the 4 dropdown buttons. Next, the bar graph looks at the data between the top two drop downs and compares the dates that exist between the two mountains. Summing this filtered series gives a very quick snapshot of where it has snowed more.
 
+### Mapping Weather Stations with Leaflet
 
+If the user would like to see how far away a weather station is away from a mountain they can take a look on a map, which uses [leaflet](https://leafletjs.com). This map is interactive and the user can zoom in on locations.
 
+![Alt text](/images/snow_app_map.PNG?raw=true "Optional Title")
+
+The user can also hover over weather stations to see summary information around weather stations.
+![Alt text](/images/snow_app_map_screen2.png?raw=true "Optional Title")
 
 
