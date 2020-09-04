@@ -23,6 +23,11 @@ rnoaa has a terrific setup that allows the user to take a list of geospatial coo
 |1468848|USW00093230|326167|2019-11-30| | | |0| | | |0|Heavenly, Lake Tahoe, California  6.25 (km)|Heavenly, Lake Tahoe, California |SOUTH LAKE TAHOE AP|38.8983|-119.9947|6.24895331637875|(km)|6.25|0|0|
 
 
+## Building the Application Interface
+
+The application uses the data processing packages above to manipulate the data, as well as using [shiny](https://shiny.rstudio.com), [flexdashboard](https://rmarkdown.rstudio.com/flexdashboard/), and [ggplot2](https://ggplot2.tidyverse.org)
+
+
 
 
 
