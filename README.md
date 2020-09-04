@@ -29,6 +29,8 @@ The application uses the data processing packages above to manipulate the data, 
 
 Flex Dashboard package is nice because socket and server functions are not necessary, this makes it easier to program with. The disadvantage is that there is limited documentation on implementation. A few things that I wanted to accomplish was compare snowfall for different mountains over time, compare overall aggregate snowfall across a matching time period, and display weather station locations. Using these 3 criterion I believed the user would be able to make good decisions on where would have more snow.
 
+![Alt text](/images/snow_app_home.PNG?raw=true "Optional Title")
+
 
 
 
