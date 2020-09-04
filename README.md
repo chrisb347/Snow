@@ -7,6 +7,7 @@ these coordinates to do the rest
 
 ## Downloading the data through rnoaa package
 
-The packages used to work with the data and connect to the API for this project are: [rnoaa](https://docs.ropensci.org/rnoaa/articles/rnoaa.html)
+The packages used to work with the data and connect to the API for this project are: [rnoaa](https://docs.ropensci.org/rnoaa/articles/rnoaa.html), [rgdal](https://www.rdocumentation.org/packages/rgdal/versions/1.5-16), [dplyr](https://cran.r-project.org/web/packages/dplyr/index.html), 
+[tidyverse](https://www.tidyverse.org), [reshape2](https://cran.r-project.org/web/packages/reshape2/index.html)
 
 
