@@ -7,6 +7,6 @@ these coordinates to do the rest
 
 ## Downloading the data through rnoaa package
 
-The full program to download the data is located [Download_data.R](chrisb347/Snow/Download_data.R)
+The packages used to work with the data and connect to the API for this project are: [rnoaa](https://docs.ropensci.org/rnoaa/articles/rnoaa.html)
 
 
