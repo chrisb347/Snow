@@ -27,6 +27,9 @@ rnoaa has a terrific setup that allows the user to take a list of geospatial coo
 
 The application uses the data processing packages above to manipulate the data, as well as using [shiny](https://shiny.rstudio.com), [flexdashboard](https://rmarkdown.rstudio.com/flexdashboard/), and [ggplot2](https://ggplot2.tidyverse.org)
 
+Flex Dashboard package is nice because socket and server functions are not necessary, this makes it easier to program with. The disadvantage is that there is limited documentation on implementation. A few things that I wanted to accomplish was compare snowfall for different mountains over time, compare overall aggregate snowfall across a matching time period, and display weather station locations. Using these 3 criterion I believed the user would be able to make good decisions on where would have more snow.
+
+
 
 
 
