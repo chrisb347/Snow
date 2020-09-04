@@ -1,0 +1,255 @@
+---
+title: "Snowfall"
+output: 
+  flexdashboard::flex_dashboard:
+   vertical_layout: fill
+   theme: spacelab
+   runtime: shiny
+    
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+#setwd('C:\\Users\\Christopher Barry\\Desktop\\fordham\\Data vis\\homework3\\Homework 3 submitt\\')
+
+library(rsconnect)
+library(flexdashboard)
+ library(rnoaa)
+ library(jsonlite)
+ library(httr)
+ library(rgdal)
+ library(dplyr)
+ library(tidyverse)
+ library(reshape2)
+library(ggplot2)
+library(shiny)
+library(leaflet)
+library(rnoaa)
+#showLogs()
+
+
+```
+
+
+```{r, include=FALSE}
+
+###read data into R
+
+station_data<-read_csv('sd1.csv')
+mp_s<-read_csv('test.csv')
+
+station_data$Mountains<-station_data$name_dist
+
+# ###create map dataframe 
+# 
+# map_station3<-station_data%>%
+#   select(id,Mountain,snow,snwd,longitude,latitude)%>%
+#   group_by(id,Mountain,longitude,latitude)%>%
+# summarise_all(sum)%>% 
+#   unite(descript,Mountain,snow, sep='=',remove=FALSE)
+# 
+# map_station1<-station_data%>%
+#   select(id,date)%>%
+#   group_by(id)%>%
+#   summarise_all(min)%>%
+#   rename(min=date)
+# 
+# map_station2<-station_data%>%
+#   select(id,date)%>%
+#   group_by(id)%>%
+#   summarise_all(max)%>%
+#   rename(max=date)
+# 
+# date_merge<-merge(map_station1,map_station2,by='id')
+# map_station<-merge(map_station3,date_merge,by='id')
+# 
+# mp_s<-map_station%>%unite(dates,min,max,sep='-',remove=FALSE)%>%
+#   unite(descript1,descript,dates,sep=', ',remove=FALSE)
+
+###################################################################
+
+##Test for all 0 data feeds
+
+snow_fall<-station_data%>%
+  select(name_dist,Fall)%>%
+  group_by(name_dist)%>%
+  summarise_all(sum)%>%
+  filter(Fall!=0)
+
+snow_depth<-station_data%>%
+  select(name_dist,Depth)%>%
+  group_by(name_dist)%>%
+  summarise_all(sum)%>%
+  filter(Depth!=0)
+
+Fall_names<-sort(unique(snow_fall$name_dist))
+Depth_names<-sort(unique(snow_depth$name_dist))
+
+
+```
+
+
+
+
+
+
+
+```{r}
+
+# selectInput(inputId='st', label='Select Snowfall or Snow Depth', choices = list('Fall','Depth'))
+# 
+# selectInput(inputId='mt1', label='Select your Mountain', choices = list(Mountains = sort(unique(station_data$name_dist))))
+#  
+#  selectInput(inputId='mt2', label='Select your Mountain', choices = list(Mountains = sort(unique(station_data$name_dist))))
+# 
+#   selectInput(inputId='mt3', label='Select your Mountain', choices = list(Mountains = sort(unique(station_data$name_dist))))
+# 
+#  selectInput(inputId='mt4', label='Select your Mountain', choices = list(Mountains = sort(unique(station_data$name_dist))))
+
+
+
+```
+Sidebar {.sidebar}
+======================================================================
+
+```{r}
+
+##metric Dropdown Menu
+selectInput(inputId='st', label='Select Snowfall or Snow Depth', choices = list('Fall','Depth'))
+
+
+###Mountain Dropdown Menus with logic dependent on the metric dropdown selection and earlier which is what the if statements are
+renderUI({
+if(input$st=='Fall'){
+  
+  
+  selectInput(inputId='mt1', label='Select your Mountain (Selection Applies to Aggregation and Time Series)', choices = list(Mountains=Fall_names))
+}else{
+  selectInput(inputId='mt1', label='Select your Mountain (Selection Applies to Aggregation and Time Series)', choices = list(Mountains=Depth_names))
+}
+})
+
+renderUI({
+if(input$st=='Fall'){
+  
+  
+  selectInput(inputId='mt2', label='Select your Mountain (Selection Applies to Aggregation and Time Series', choices = list(Mountains=Fall_names))
+}else{
+  selectInput(inputId='mt2', label='Select your Mountain (Selection Applies to Aggregation and Time Series', choices = list(Mountains=Depth_names))
+}
+})
+
+renderUI({
+if(input$st=='Fall'){
+  
+  
+  selectInput(inputId='mt3', label='Select your Mountain', choices = list(Mountains=Fall_names))
+}else{
+  selectInput(inputId='mt3', label='Select your Mountain', choices = list(Mountains=Depth_names))
+}
+})
+
+renderUI({
+if(input$st=='Fall'){
+  
+  
+  selectInput(inputId='mt4', label='Select your Mountain', choices = list(Mountains=Fall_names))
+}else{
+  selectInput(inputId='mt4', label='Select your Mountain', choices = list(Mountains=Depth_names))
+}
+})
+
+
+
+```
+
+
+
+
+Instructions
+=============================================================
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+<h1><center><b><font size="5">Snowfall Application for Ski Resorts </font></b><center></h1>
+<br>
+<font size="3"> 
+Select your Mountain (a maximum of 5 weather stations within 20 km of mountain listed)
+The distances on the dropdown menu (left) refer to the distance between the mountain the the weather station.
+
+Some stations may not have a full historic data series, try all of the stations (or combinations of stations) to find the most complete series.
+Weather stations move locations or close, so you may need to compare multiple weather stations to observe a full time period. When comparing weather series from different series keep in mind, collection methods between stations may change over time or from station to station.
+</font>
+
+
+Mountain Comparison
+======================================================================
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+
+### Snow-metric by Mountain in inches
+
+```{r}
+
+##Time series plot which filters for weather station selection (Up to 4)
+
+renderPlot({
+
+y2<-filter(station_data,Mountains==input$mt1| Mountains== input$mt2| Mountains== input$mt3 | name_dist== input$mt4)
+ ggplot(y2) +
+  geom_line(aes_string(x='date',y=input$st,col='Mountains'))+xlab('Date')
+})
+
+```
+
+
+
+### Total Snow-metric (only overlapping dates compared)
+
+```{r}
+###Aggregation of consistent dates with data between first two mountain dropdown menus
+renderPlot({
+
+   x<-station_data%>%
+  filter(name_dist==input$mt1 | name_dist== input$mt2)
+     
+     station_overlap<-x$date[duplicated(x$date)]
+      
+     x2<-x[x$date %in% station_overlap,]
+     
+  ggplot(x2) + geom_bar(aes_string(x='name_dist',y=input$st,fill='name_dist'),stat = 'identity') + labs(fill='Mountain') + xlab('Mountain')
+
+})
+
+
+
+```
+
+
+Mountain Weather Station Location
+===========================================================================
+
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Station Location
+
+```{r}
+###map for graphing weather stations in the US.  Be careful when you knit this, if you do it too many times LEAFLEAT website will block your IP address from downloading the map tiles. when this happenes you only see grey with all the points graphed
+
+renderLeaflet({
+
+ 
+
+  leaflet(data = mp_s)%>%
+  addTiles() %>%
+  addMarkers(~longitude,~latitude,popup=~as.character(snow),label=~as.character(descript1),clusterOptions = markerClusterOptions())
+ 
+
+})
+
+
+```
+
